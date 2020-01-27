@@ -1,15 +1,26 @@
+#!/bin/bash
 #PART 1: Git/Node/Mongo
 
-sudo yum get update
-sudo yum install git
-sudo yum install npm
-sudo yum install mongodb-server
-sudo systemctl enable mongod && systemctl start mongod
-sudo useradd todoapp
-sudo passwd todoapp
-todoapp - Password
-su - todoapp
-cd
+USER_NAME="todoapp"
+
+install_services () {
+    sudo yum get update
+    sudo yum install git
+    sudo yum install npm
+    sudo yum install mongodb-server
+    sudo systemctl enable mongod && systemctl start mongod
+}
+install_services
+
+create_user(){
+    sudo useradd "$USER_NAME"
+    sudo passwd "$USER_NAME"
+    todoapp - Password
+    su - "$USER_NAME"
+    cd
+}
+create_user
+
 
 git clone https://github.com/timoguic/ACIT4640-todo-app
 
