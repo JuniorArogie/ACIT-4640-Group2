@@ -119,7 +119,7 @@ echo "############################################ TODOAPP STARTED #############
 
 #run the vm_setup.sh in WSL
 bash_vm(){
-    cd ~/windows/Desktop/assignment2/setup && bash vm_setup.sh
+    bash ./setup/vm_setup.sh
 }
 
 clean_all
