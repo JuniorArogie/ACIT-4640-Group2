@@ -1,0 +1,103 @@
+{
+    "description": "Packer basebox for 4640",
+    "variables": {
+        "admin_user": "admin",
+        "admin_passwd": "P@ssw0rd",
+        "pub_key_file": "./files/acit_admin_id_rsa.pub",
+        "iso_url": "./isos/CentOS-7-x86_64-Minimal-1908.iso",
+        "iso_checksum_url": "C:/Users/wrz77/Desktop/assignment3/isos/shasum.txt",
+        "iso_checksum_type": "file",
+        "http_directory": "./files/http",
+        "shutdown_command": "sudo poweroff "
+    },
+    "builders": [
+        {
+            "type": "virtualbox-iso",
+            "output_directory": "./output",
+            "vm_name": "4640_BASE",
+            "iso_url": "{{ user `iso_url` }}",
+            "iso_checksum_url": "{{ user `iso_checksum_url` }}",
+            "iso_checksum_type": "{{ user `iso_checksum_type` }}",
+            "http_directory": "{{ user `http_directory` }}",
+            "shutdown_command": "{{ user `shutdown_command` }}",
+            "ssh_username": "{{ user `admin_user` }}",
+            "ssh_password": "{{ user `admin_passwd` }}",
+            "ssh_timeout": "20m",
+            "ssh_pty": "true",
+            "boot_command": [
+                "<up><wait><tab><wait> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ks.cfg<enter><wait>"
+            ],
+            "format": "ova",
+            "guest_os_type": "RedHat_64",
+            "guest_additions_mode": "disable",
+            "hard_drive_interface": "sata",
+            "hard_drive_nonrotational": true,
+            "hard_drive_discard": true,
+            "memory": "1536",
+            "vboxmanage": [
+                [
+                    "modifyvm",
+                    "{{.Name}}",
+                    "--nictype1",
+                    "virtio"
+                ]
+            ]
+        }
+    ],
+    "provisioners": [
+        {
+            "type": "shell",
+            "inline": [
+                "mkdir ~{{ user `admin_user`}}/.ssh"
+            ]
+        },
+        {
+            "type": "file",
+            "source": "{{ user `pub_key_file` }}",
+            "destination": "/home/{{ user `admin_user` }}/.ssh/authorized_keys"
+        },
+        {
+            "type": "file",
+            "source": "./files/setup",
+            "destination": "/home/{{ user `admin_user` }}/"
+        },
+        
+        {
+          "type": "shell",
+          "inline": [
+              "chmod 700 ~/.ssh",
+              "chmod 600 ~/.ssh/authorized_keys",
+              "sudo yum install git -y",
+              "sudo yum install nodejs -y",
+              "sudo yum install mongodb-server -y",
+              "sudo systemctl enable mongod && sudo systemctl start mongod",
+              "sudo yum install nginx -y",
+              " echo '############################################ finished install############################################'",
+              "sudo useradd 'todoapp'",
+              "echo todoapp:P@ssw0rd | sudo chpasswd",
+              "sudo chown -R todoapp /home/todoapp",
+              "sudo chmod 755 -R /home/todoapp",
+              "echo '############################################ User created and permission changed ############################################'",
+              "sudo mkdir /home/todoapp/app",
+              "sudo git clone https://github.com/timoguic/ACIT4640-todo-app.git /home/todoapp/app/ACIT4640-todo-app",
+              "echo '############################################ APP Cloned############################################'",
+              "sudo rm /home/todoapp/app/ACIT4640-todo-app/config/database.js",
+              "sudo rm /etc/nginx/nginx.conf",
+              "sudo cp ~/setup/database.js /home/todoapp/app/ACIT4640-todo-app/config/",
+              "sudo cp ~/setup/nginx.conf /etc/nginx/",
+              "sudo cp ~/setup/todoapp.service /etc/systemd/system",
+              "echo '############################################ move configs done############################################'",
+              "sudo systemctl daemon-reload",
+              "sudo systemctl enable nginx",
+              "sudo systemctl start nginx",
+              "sudo systemctl enable todoapp",
+              "sudo systemctl start todoapp",
+              "echo '############################################ service started############################################'",
+              "cd /home/todoapp/app/ACIT4640-todo-app",
+              "cd /home/todoapp/app/ACIT4640-todo-app && sudo npm install",
+              "cd /home/todoapp/app/ACIT4640-todo-app && sudo npm install"
+
+          ]
+        }        
+    ]
+}
