@@ -7,7 +7,6 @@
         "iso_url": "./isos/CentOS-7-x86_64-Minimal-1908.iso",
         "iso_checksum_url": "./isos/shasum.txt",
         //"iso_checksum_url": "C:/Users/wrz77/Desktop/assignment3/isos/shasum.txt",
-        // this path just work on runze's computer
         "iso_checksum_type": "file",
         "http_directory": "./files/http",
         "shutdown_command": "sudo poweroff "
