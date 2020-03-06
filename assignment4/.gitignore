@@ -1,0 +1,10 @@
+/.vagrant
+/isos
+/output
+/packer_cache
+/base_4640.box
+/packer.exe
+/vm_setup.sh
+/todoapp.retry
+/centos_base.json
+

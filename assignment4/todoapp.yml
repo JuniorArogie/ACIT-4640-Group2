@@ -1,0 +1,135 @@
+---
+- hosts: all
+  tasks:
+  ######install service ######
+    - name: Install nginx
+      become: yes
+      package:
+        name: nginx
+        state: installed
+    - name: Install Mongodb
+      become: yes
+      package:
+          name: mongodb
+          state: installed
+    - name: Install Git
+      become: yes
+      package:
+          name: git
+          state: installed
+    - name: Install Npm
+      become: yes
+      package:
+          name: npm
+          state: installed
+    - name: Install Mongodb-server
+      become: yes
+      package:
+          name: mongodb-server
+          state: installed
+    #enable and start mongodb
+    - name: Manage Mongodb
+      become: yes
+      systemd:
+          name: mongod
+          enabled: yes
+    - name: Start mongodb Service
+      become: yes
+      service:
+          name: mongod
+          state: started 
+    ######create user, set permission, change pwd ######
+    - name: create todoapp user
+      become: yes
+      user:
+          name: todoapp
+          password: P@ssw0rd
+          
+    - name: change owner to home directory
+      become: yes
+      file:
+          path: "/home/todoapp"
+          state: directory
+          recurse: yes
+          mode: '0755'
+          owner: todoapp
+          
+
+          
+    ######download github######
+    - name: make direction
+      become: yes
+      file:
+          path: "/home/todoapp/app"
+          state: directory
+    - name: clone from github
+      become: yes
+      git:
+         repo: 'https://github.com/timoguic/ACIT4640-todo-app.git'
+         dest: "/home/todoapp/app/ACIT4640-todo-app"
+         force: yes
+    
+    ######move file######
+    - name: move databse file
+      become: yes
+      copy:
+          src: "./files/database.js"
+          dest: "/home/todoapp/app/ACIT4640-todo-app/config/"
+
+    - name: move todoapp.server file
+      become: yes
+      copy:
+          src: './files/todoapp.service'
+          dest: '/etc/systemd/system'
+          
+    - name: Copy Nginx.conf
+      become: yes
+      copy:
+          src: "./files/nginx.conf"
+          dest: "/etc/nginx"
+          
+    - name: Copy Mongodb folder
+      become: yes
+      copy:
+          src: "./files/ACIT4640-mongodb"
+          dest: "/home/admin/ACIT4640-mongodb"
+          
+    - name: Mongo restore
+      become: yes
+      command: "mongorestore -d acit4640 /home/admin/ACIT4640-mongodb/ACIT4640-mongodb"
+      args:
+          chdir: /home/admin
+    ######npm install######
+    
+    - name: run npm install
+      become: yes
+      npm:
+          path: /home/todoapp/app/ACIT4640-todo-app
+
+    
+    ######service start######
+    
+    - name: enable nginx service
+      become: yes
+      systemd: 
+          name: nginx
+          enabled: yes
+    - name: Start nginx service
+      become: yes
+      service:
+          name: nginx
+          state: started
+          
+    - name: enable todoapp service
+      become: yes
+      systemd: 
+          name: todoapp
+          enabled: yes
+    - name: Start todoapp service
+      become: yes
+      service:
+          name: todoapp
+          state: started
+          
+          
+      
