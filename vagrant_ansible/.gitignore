@@ -1,5 +1,5 @@
 /.vagrant
-/isos/CentOS-7-x86_64-Minimal-1908.iso
+/isos
 /output
 /packer_cache
 /base_4640.box
