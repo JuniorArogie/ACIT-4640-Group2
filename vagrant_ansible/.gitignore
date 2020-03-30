@@ -1,0 +1,8 @@
+/.vagrant
+/isos/CentOS-7-x86_64-Minimal-1908.iso
+/output
+/packer_cache
+/base_4640.box
+/packer.exe
+/todoapp.retry
+

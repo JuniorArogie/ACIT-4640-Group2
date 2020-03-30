@@ -1,0 +1,12 @@
+---
+# handlers file for roles/mongodb
+
+- name: move mongodb
+  become: yes
+  copy:
+      src: "./files/ACIT4640-mongodb"
+      dest: "/home/admin/ACIT4640-mongodb"
+
+- name: mongorestore 
+  become: yes
+  shell: mongorestore -d acit4640 /home/admin/ACIT4640-mongodb/ACIT4640-mongodb

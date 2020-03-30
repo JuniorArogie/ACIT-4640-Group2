@@ -1,0 +1,68 @@
+- name: display message
+  debug: 
+    msg: hello from todoapp 
+
+- name: Install Git
+  become: yes
+  package:
+      name: git
+      state: installed
+
+######create user, set permission, change pwd ######
+- name: create todoapp user
+  become: yes
+  user:
+      name: todoapp
+      password: P@ssw0rd
+
+- name: change owner to home directory
+  become: yes
+  file:
+      path: "/home/todoapp"
+      state: directory
+      recurse: yes
+      mode: '0755'
+      owner: todoapp
+
+
+          
+######download github######
+- name: make direction
+  become: yes
+  file:
+      path: "/home/todoapp/app"
+      state: directory
+- name: clone from github
+  become: yes
+  git:
+     repo: 'https://github.com/timoguic/ACIT4640-todo-app.git'
+     dest: "/home/todoapp/app/ACIT4640-todo-app"
+     force: yes
+
+######move file######
+- name: move databse file
+  become: yes
+  copy:
+      src: "./files/database.js"
+      dest: "/home/todoapp/app/ACIT4640-todo-app/config/"
+
+- name: move todoapp.server file
+  become: yes
+  vars: 
+      todoapp_port: 8080
+  copy:
+      src: './files/todoapp.service'
+      dest: '/etc/systemd/system'
+  notify: 
+#    - enable todoapp service
+#    - Start todoapp service
+    - restart todoapp
+
+######npm install######
+
+- name: run npm install
+  become: yes
+  npm:
+      path: /home/todoapp/app/ACIT4640-todo-app
+
+######set port ######

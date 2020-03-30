@@ -1,0 +1,56 @@
+---
+# tasks file for roles/mongodb
+
+#- name: Install Mongodb
+#  become: yes
+#  package:
+#      name: mongodb
+#      state: installed
+#      
+#- name: Install Mongodb-server
+#  become: yes
+#  package:
+#      name: mongodb-server
+#      state: installed
+#
+#          
+#- name: Copy Mongodb folder
+#  become: yes
+#  copy:
+#      src: "./files/ACIT4640-mongodb"
+#      dest: "/home/admin/ACIT4640-mongodb"
+#      
+#- name: Start mongodb Service
+#  become: yes
+#  service:
+#      name: mongod
+#      state: started 
+#      
+#- name: Mongo restore
+#  become: yes
+#  shell: "mongorestore -d acit4640 /home/admin/ACIT4640-mongodb/ACIT4640-mongodb"
+#  args:
+#      chdir: /home/admin
+
+
+- name: install mongodb
+  become: yes
+  package:
+    name: mongodb
+    state: installed
+    
+- name: install mongodb-server
+  become: yes
+  package:
+    name: mongodb-server
+    state: installed
+    
+- name: Enable MongoDB
+  become: yes
+  service:
+    name: mongod
+    enabled: yes
+    state: started
+  notify: 
+    - move mongodb
+    - mongorestore

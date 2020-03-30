@@ -1,0 +1,20 @@
+---
+# handlers file for roles/todoapp_service
+
+
+#- name: enable todoapp service
+#  become: yes
+#  systemd: 
+#      name: todoapp
+#      enabled: yes
+#- name: Start todoapp service
+#  become: yes
+#  service:
+#      name: todoapp
+#      state: started
+      
+- name: restart todoapp
+  become: yes
+  systemd: 
+    name: todoapp
+    state: restarted
