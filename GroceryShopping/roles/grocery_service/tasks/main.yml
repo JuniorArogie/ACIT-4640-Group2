@@ -1,0 +1,36 @@
+- name: Display message
+  debug: 
+    msg: hello from grocery 
+
+#####move server file######
+- name: Move grocery.server file
+  become: yes
+  copy:
+      src: './files/grocery.service.app'
+      dest: '/etc/systemd/system'
+
+# - name: Move grocery.server file
+#   become: yes
+#   vars: 
+#       shopping_port: 3000
+#   copy:
+#       src: './files/grocery.service.app'
+#       dest: '/etc/systemd/system'
+#   notify: 
+# #    - enable todoapp service
+# #    - Start todoapp service
+#     - restart grocery
+
+######start service######
+
+# - name: Enable grocery service
+#   become: yes
+#   systemd: 
+#       name: grocery
+#       enabled: yes
+
+# - name: Start grocery service
+#   become: yes
+#   service:
+#       name: grocery
+#       state: started

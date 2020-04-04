@@ -1,0 +1,28 @@
+---
+# tasks file for roles/mariadb
+
+- name: Install mariadb
+  become: yes
+  package:
+    name: mariadb
+    state: installed
+    
+- name: Install mariadb-server
+  become: yes
+  package:
+    name: mariadb-server
+    state: installed
+
+- name: Install mariadb-libs
+  become: yes
+  package:
+    name: mariadb-libs
+    state: installed
+    
+- name: Enable MariaDB
+  become: yes
+  service:
+    name: mariadb
+    enabled: yes
+    state: started
+

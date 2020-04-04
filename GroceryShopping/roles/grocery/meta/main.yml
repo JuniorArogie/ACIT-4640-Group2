@@ -1,0 +1,6 @@
+---
+dependencies:
+    - nodejs
+    - mariadb
+    - groceryshopping
+    - grocery_service

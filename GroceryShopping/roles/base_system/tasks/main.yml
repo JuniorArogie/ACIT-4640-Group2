@@ -1,0 +1,13 @@
+---
+- name: Disable selinux
+  become: yes
+  selinux:
+      state: disabled
+      
+- name: Open firewall for HTTP
+  become: yes
+  firewalld:
+      service: http
+      permanent: yes
+      state: enabled
+      immediate: yes

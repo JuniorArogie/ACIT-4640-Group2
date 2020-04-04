@@ -1,0 +1,7 @@
+---
+- hosts: all
+  gather_facts: no
+  vars:
+    todo_user: admin
+  roles:
+    -  grocery

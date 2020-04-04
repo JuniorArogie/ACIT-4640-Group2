@@ -1,0 +1,41 @@
+Vagrant.configure("2") do |config|
+  config.vm.box = "basebox_4640"
+
+  config.ssh.username = "admin"
+  config.ssh.private_key_path = "./files/acit_admin_id_rsa"
+
+  config.vm.define "shopping" do |shopping|
+    shopping.vm.hostname = "shopping.bcit.local"
+    shopping.vm.network "forwarded_port", guest: 3000, host: 3000
+    shopping.vm.synced_folder ".", "/vagrant", disabled: true
+  #  shopping.vm.provision "file", source: "./files/acit_admin_id_rsa", destination: "/home/admin/.ssh/"
+  #  shopping.vm.provision "file", source: "./files/setup/nginx.conf", destination: "/home/admin/nginx.conf"
+  #  shopping.vm.provision "file", source: "./files/setup/shopping.service", destination: "/home/admin/shopping.service"
+  #  shopping.vm.provision "file", source: "./files/setup/database.js", destination: "/home/admin/database.js"
+  #  shopping.vm.provision "file", source: "./files/provisioning.sh", destination: "/home/admin/"
+
+
+  config.vm.provision :ansible do |ansible|
+      ansible.playbook = "shopping.yml"
+      ansible.compatibility_mode = "2.0"
+
+#   shopping.vm.provision "shell" do |shell|
+#     shell.path = "./files/provisioning.sh"
+
+#   shopping.vm.provision "shell", inline: <<-SHELL
+#     setenforce 0
+#     yum -y install nginx
+#    systemctl start nginx
+#   SHELL
+
+    end
+
+    shopping.vm.provider "virtualbox" do |vb|
+      vb.name = "TODO_4640"
+      vb.linked_clone = true
+    end
+  end
+
+
+
+end

@@ -1,0 +1,46 @@
+- name: Display message
+  debug: 
+    msg: Hello There! 
+
+- name: Install Git
+  become: yes
+  package:
+      name: git
+      state: installed
+
+# - name: Copy GroceryShopping
+#   become: yes
+#   copy:
+#     src: "./files/Node-Express-MySQL-GroceryShopping"
+#     dest: "/home/admin"
+
+######Download Github######
+- name: Clone GroceryShopping from Github
+  become: yes
+  git:
+      repo: 'https://github.com/jpdevspace/Node-Express-MySQL-GroceryShopping'
+      dest: "/home/admin/Node-Express-MySQL-GroceryShopping"
+      force: yes
+
+######npm install######
+
+- name: Run npm install
+  become: yes
+  npm:
+      path: /home/admin/Node-Express-MySQL-GroceryShopping
+
+######set port ######
+- name: Start Firewall
+  become: yes
+  command: "systemctl start firewalld"
+
+- name: Set port for firewall
+  become: yes
+  command: "firewall-cmd --zone=public --add-port=3000/tcp"
+  
+######import database ######
+
+- name: Import SQL Database
+  become: yes
+  command: bash -c "mysql -u root < /home/admin/Node-Express-MySQL-GroceryShopping/db/shoppingSchema.sql"
+
